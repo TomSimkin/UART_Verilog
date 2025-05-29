@@ -51,7 +51,7 @@ module uart_tb();
 			@(posedge tb_clk);
 			@(posedge tb_clk); 
 			
-			// Test case : inject to Tx (8-bit data = 0x5A)
+			// Test case 1: inject to Tx (8-bit data = 0x5A)
 			tb_enableTx = 1'b1;
 			$display("Injecting 0x5A to Tx");
 			tb_bitsTx = 8'h5A;
@@ -59,7 +59,7 @@ module uart_tb();
 			tb_enableTx = 1'b0;
 			@(posedge tb_rxFinished)
 			
-			// Test case result
+			// Test case 1 result
 			if ((tb_rxFinished == 1) && (tb_rxBits == 8'h5A) && (tb_parityError == 0))
 				$display("PASS: Recieved 0x%h, Parity Error = %b", tb_rxBits, tb_parityError);
 			else

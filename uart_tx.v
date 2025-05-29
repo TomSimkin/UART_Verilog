@@ -10,11 +10,11 @@ module uart_tx
 	
 // State machine decleration.
 
-	parameter s_idleTx 		  	= 3'b000;
-	parameter s_startTx 	  	= 3'b001;
-	parameter s_sendParityTx 	= 3'b010;
-	parameter s_transmitDataTx 	= 3'b011;
-	parameter s_stopTx 		  	= 3'b100;
+	localparam s_idleTx 		  	= 3'b000;
+	localparam s_startTx 	  		= 3'b001;
+	localparam s_sendParityTx 		= 3'b010;
+	localparam s_transmitDataTx 	= 3'b011;
+	localparam s_stopTx 		  	= 3'b100;
 	
 	reg[2:0] r_currentStateTx = 0;
 
@@ -69,7 +69,7 @@ module uart_tx
 							else
 								begin
 									r_parityTx <= 1'b0;
-									r_clockCounterTx = 0;
+									r_clockCounterTx <= 0;
 									r_currentStateTx <= s_transmitDataTx;
 								end
 						end

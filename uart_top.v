@@ -8,7 +8,7 @@ module uart_top #(parameter clksPerBit = 87)(
     output wire parityError
 );
 
-    // UART Transmitter
+    // UART transmitter
     uart_tx #(.clksPerBit(clksPerBit)) uut_tx (
         .i_clkTx(clk),
         .i_enableTx(enableTx),
@@ -17,7 +17,7 @@ module uart_top #(parameter clksPerBit = 87)(
         .o_doneTx()           
     );
 
-    // UART Receiver
+    // UART receiver
     uart_rx #(.clksPerBit(clksPerBit)) uut_rx (
         .i_clkRx(clk),
         .i_txBit(dataTx),

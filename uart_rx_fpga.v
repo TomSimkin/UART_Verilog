@@ -1,10 +1,5 @@
-// By theory, UART clock needs to be atleast 16x greater than the baud rate.
-// Be sure to keep that in mind (r_clockCounter).
-// Pay attention - if (r_clockCounter == clksPerBit / 2) :
-// We are sampling each received bit in the middle (after half bit period we assume that the bit is stable).
-
-module uart_rx
-	#(parameter clksPerBit)
+module uart_rx_fpga
+	#(parameter clksPerBit = 234)
 	(
 		input 			 i_clkRx,
 		input 		 	 i_txBit,
@@ -22,21 +17,21 @@ module uart_rx
 	localparam s_stopRx 		= 3'b100;
 	localparam s_holdRx		  	= 3'b101;
 	
-	reg[2:0] r_currentStateRx = 0;
+	reg[2:0] r_currentStateRx;
 	
 // FF registers - to avoid problems caused by metastability.
 // Using 2 FF guarantees 2 CC delay -> transitioning to Rx clock domain.
 
-	reg r_ff1 	 = 1'b1;
-	reg r_rxData = 1'b1;
+	reg r_ff1;
+	reg r_rxData;
 	
 // Other registers
 	
-	reg [7:0] r_clockCounter = 0;
-	reg [3:0] r_bitIndex 	 = 0;
-	reg [8:0] r_rxBits		 = 0;
-	reg r_parityCheck    	 = 1'b0; // Even parity: 0 - correct, 1 - error
-	integer r_resCounter  	 = 0;
+	reg [7:0] r_clockCounter;
+	reg [3:0] r_bitIndex;
+	reg [8:0] r_rxBits;
+	reg 	  r_parityCheck; 
+	integer   r_resCounter;
 	
 // 2 CC delay
 
@@ -75,12 +70,12 @@ module uart_rx
 									r_currentStateRx <= s_idleRx;
 							end
 						else
-							r_clockCounter <= r_clockCounter + 1; // If not in the middle, increase counter by 1
+							r_clockCounter <= r_clockCounter + 1'b1; // If not in the middle, increase counter by 1
 						end
 				s_receiveDataRx:
 					begin
 						if (r_clockCounter < clksPerBit - 1) // Checking from middle of last bit to middle of current bit
-							r_clockCounter <= r_clockCounter + 1;
+							r_clockCounter <= r_clockCounter + 1'b1;
 						else
 							begin
 								r_clockCounter <= 0;
@@ -92,7 +87,7 @@ module uart_rx
 										r_currentStateRx <= s_checkParityRx;
 									end
 								else
-									r_bitIndex <= r_bitIndex + 1;
+									r_bitIndex <= r_bitIndex + 1'b1;
 							end
 					end
 				s_checkParityRx:
@@ -108,10 +103,14 @@ module uart_rx
 				s_stopRx:
 					begin
 						if (r_clockCounter < clksPerBit - 1)
-							r_clockCounter <= r_clockCounter + 1;
+							r_clockCounter <= r_clockCounter + 1'b1;
 						else
 							begin
 								r_clockCounter 	 <= 0;
+								
+								if (r_rxData != 1'b1)	// Check stop bit
+									o_parityError <= 1'b1;
+									
 								o_rxFinished 	 <= 1'b1;
 								r_currentStateRx <= s_holdRx;
 							end
