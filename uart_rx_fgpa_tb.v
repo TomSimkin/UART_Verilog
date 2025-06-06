@@ -11,6 +11,7 @@ module uart_rx_fpga_tb;
 
     // DUT I/O
     reg tb_clk = 0;
+	reg tb_reset = 1;
     reg tb_txBit = 1;
     wire tb_rxFinished;
     wire [7:0] tb_rxBits;
@@ -19,6 +20,7 @@ module uart_rx_fpga_tb;
     // Instantiate the DUT
     uart_rx_fpga #(.clksPerBit(tb_clksPerBit)) uut (
         .i_clkRx(tb_clk),
+		.i_reset(tb_reset),
         .i_txBit(tb_txBit),
         .o_rxFinished(tb_rxFinished),
         .o_rxBits(tb_rxBits),
@@ -59,21 +61,24 @@ module uart_rx_fpga_tb;
     initial begin
         // Initialize
         $display("UART RX testbench started");
-
+		
+		tb_reset = 1;
+		repeat (3) @(posedge tb_clk);
+		tb_reset = 0;
         // Wait for stable clock
-        @(posedge tb_clk);
-		@(posedge tb_clk); 
-
+        repeat (2) @(posedge tb_clk);
+		
         // ---------------------------
         // Test 1: send 0x5A with correct parity
         // ---------------------------
         $display("[TEST 1] Sending 0x5A with correct parity");
         send_uart_frame(8'h5A, ^8'h5A);
 		
+		// Wait until signal is defined
 		wait(tb_rxFinished == 1);
-		@(posedge tb_clk); // One extra tick to settle
+		@(posedge tb_clk) // Let outputs settle
 		
-        if (tb_rxFinished == 1 && tb_rxBits == 8'h5A && tb_parityError == 0)
+        if (tb_rxBits == 8'h5A && tb_parityError == 0)
             $display("[PASS] RX received 0x%h, parity OK", tb_rxBits);
         else
             $display("[FAIL] RX = 0x%h, parityError = %b", tb_rxBits, tb_parityError);
@@ -82,13 +87,14 @@ module uart_rx_fpga_tb;
         // Test 2: send 0x5A with wrong parity
         // ---------------------------
 		
-		@(posedge tb_clk);
-		@(posedge tb_clk); 
+		wait(tb_rxFinished == 0);
+		repeat (2) @(posedge tb_clk);
 		
         $display("[TEST 2] Sending 0x5A with wrong parity");
         send_uart_frame(8'h5A, ~(^8'h5A));
-
-        if (tb_rxFinished && tb_parityError)
+		
+		wait(tb_rxFinished == 1);
+        if (tb_parityError)
             $display("[PASS] Parity error correctly detected");
         else
             $display("[FAIL] Parity error NOT detected");
