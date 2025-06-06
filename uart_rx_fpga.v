@@ -30,7 +30,6 @@ module uart_rx_fpga
 	reg [7:0] r_clockCounter;
 	reg [3:0] r_bitIndex;
 	reg [8:0] r_rxBits;
-	reg 	  r_parityCheck; 
 	integer   r_resCounter;
 	
 // 2 CC delay
@@ -50,7 +49,6 @@ module uart_rx_fpga
 						r_clockCounter 	<= 0;
 						r_bitIndex 	   	<= 0;
 						r_rxBits 	   	<= 0;
-						r_parityCheck 	<= 1'b0;
 						o_parityError 	<= 1'b0;
 						r_resCounter 	<= 0;
 						
@@ -80,10 +78,9 @@ module uart_rx_fpga
 							begin
 								r_clockCounter <= 0;
 								r_rxBits[r_bitIndex] <= r_rxData;
-								if (r_bitIndex == 8) // Parity bit check
+								if (r_bitIndex == 8) 
 									begin
 										r_bitIndex 		 <= 0;
-										r_parityCheck    <= ^r_rxBits[8:1];
 										r_currentStateRx <= s_checkParityRx;
 									end
 								else
@@ -91,13 +88,12 @@ module uart_rx_fpga
 							end
 					end
 				s_checkParityRx:
-					begin
-						if (r_parityCheck == r_rxBits[0])
+					begin					
+						if ((^r_rxBits[7:0]) == r_rxBits[8])
 							o_parityError <= 1'b0;
 						else
 							o_parityError <= 1'b1;
 							
-						r_parityCheck 	 <= 1'b0;
 						r_currentStateRx <= s_stopRx;
 					end
 				s_stopRx:
@@ -122,6 +118,7 @@ module uart_rx_fpga
 								r_currentStateRx <= s_idleRx;
 								o_rxFinished 	 <= 1'b0;
 								r_resCounter 	 <= 0;
+								o_rxFinished <= 1'b0;
 							end
 						else
 							r_resCounter <= r_resCounter + 1;
@@ -132,6 +129,6 @@ module uart_rx_fpga
 			endcase
 		end
 		
-	assign o_rxBits = r_rxBits[8:1];
+	assign o_rxBits = r_rxBits[7:0];
 		
 endmodule
