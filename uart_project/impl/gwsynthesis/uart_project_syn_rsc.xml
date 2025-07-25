@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="uart_top" Register="31" Lut="55" T_Register="111(31)" T_Alu="23(0)" T_Lut="154(55)">
+ <SubModule name="RX" Register="35" Alu="3" Lut="53" T_Register="35(35)" T_Alu="3(3)" T_Lut="53(53)"/>
+ <SubModule name="TX" Register="24" Alu="3" Lut="37" T_Register="24(24)" T_Alu="3(3)" T_Lut="37(37)"/>
+ <SubModule name="DEBOUNCE" Register="21" Alu="17" Lut="9" T_Register="21(21)" T_Alu="17(17)" T_Lut="9(9)"/>
+</Module>

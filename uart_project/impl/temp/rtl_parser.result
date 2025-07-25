@@ -1,0 +1,36 @@
+[
+ {
+  "InstFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_top.v",
+  "InstLine" : 1,
+  "InstName" : "uart_top",
+  "ModuleFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_top.v",
+  "ModuleLine" : 1,
+  "ModuleName" : "uart_top",
+  "SubInsts" : [
+   {
+    "InstFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_top.v",
+    "InstLine" : 36,
+    "InstName" : "RX",
+    "ModuleFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_rx.v",
+    "ModuleLine" : 1,
+    "ModuleName" : "uart_rx"
+   },
+   {
+    "InstFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_top.v",
+    "InstLine" : 54,
+    "InstName" : "TX",
+    "ModuleFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_tx.v",
+    "ModuleLine" : 1,
+    "ModuleName" : "uart_tx"
+   },
+   {
+    "InstFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_top.v",
+    "InstLine" : 70,
+    "InstName" : "DEBOUNCE",
+    "ModuleFile" : "C:/Gowin/Gowin_V1.9.11.01_Education_x64/IDE/bin/Documents/uart_project/src/uart_debounce.v",
+    "ModuleLine" : 1,
+    "ModuleName" : "uart_debounce"
+   }
+  ]
+ }
+]
